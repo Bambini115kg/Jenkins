@@ -1,0 +1,18 @@
+node("ansible_docker"){
+    stage("Git checkout"){
+        git credentialsId: 'vkl', url: 'git@github.com:Bambini115kg/Jenkins.git'
+    }
+    stage("Check ssh key"){
+        secret_check=true
+    }
+    stage("Run playbook"){
+        if (secret_check){
+            sh 'ansible-galaxy role install -p roles -r requirements.yml java'
+            sh 'ansible-playbook site.yml -i inventory/prod.yml'
+        }
+        else{
+            echo 'no more keys'
+        }
+        
+    }
+}
